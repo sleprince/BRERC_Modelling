@@ -2,9 +2,9 @@
 # give a change index score. You need to have a large amount of data to do this 
 # (i.e + 100 lines per taxa in each time point)
 
-setwd("D:/BRERC")
+setwd("C:/BRERC")
 library(sparta)
-MyData<-read.csv("BRERC.csv")
+MyData<-read.csv("BRERC2.csv") #This is the CSV made in run first?
 
 
 #Needs to be Y-M-D

@@ -1,7 +1,7 @@
 #Run this code to get a new CSV to work with that contains all the data
 
 #Set your working directory
-setwd("D:/BRERC")
+setwd("C:/BRERC")
 
 #I called that dataset BRERC, you will need to change that. Don't touch anything
 #else though!
@@ -14,7 +14,11 @@ install.packages("lubridate")
 install.packages("rnrfa")
 install.packages("tidyverse")
 install.packages("dplyr")
-install.packages("occAssess")
+
+
+install.packages("remotes")
+remotes::install_github("robboyd/occAssess")
+1
 
 library(lubridate)
 library(tidyverse)
@@ -98,3 +102,9 @@ MyData$Uncertainty  <- as.numeric(MyData$Uncertainty)
 MyData$Year <- as.integer(MyData$Year)
 
 #####At this point you have a dataset which works with Darwin Standard#####
+
+#Writing data to a new csv file called BRERC2, you have to run RStudio as Admin
+#or you'll see "no permission to open file"
+#df <- MyData
+write.csv(MyData,"C://BRERC//BRERC2.csv", row.names = TRUE)
+system("chmod 644 C://BRERC//BRERC2.csv")

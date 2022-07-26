@@ -1,5 +1,6 @@
 ######Prep Dataset#####
-setwd("D:/BRERC")
+#you need to use a small sample of data for this script
+setwd("C:/BRERC")
 
 library(lubridate)
 library(tidyverse)
@@ -8,7 +9,7 @@ library(occAssess)
 library(rnrfa)
 library(sparta)
 
-MyData<-read.csv("Assess.CSV") #This is the CSV you made in 'run first'
+MyData<-read.csv("BRERC2.CSV") #This is the CSV you made in 'run first'
 
 #####Assess Record Number#####
 

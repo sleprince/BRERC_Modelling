@@ -1,6 +1,6 @@
-setwd("D:/BRERC")
+setwd("C:/BRERC")
 library(sparta)
-MyData<-read.csv("BRERC.csv")
+MyData<-read.csv("BRERC2_dataset_vsmall2.csv") #this is the CSV made in run first?
 
 
 #Needs to be Y-M-D
@@ -13,3 +13,12 @@ results <- dataDiagnostics(taxa = MyData$Species,
                            site = MyData$Site,
                            time_period = MyData$dateofrecord,
                            progress_bar = FALSE)
+print(A)
+
+trace("dataDiagnostics", edit=TRUE)
+
+
+print("Hello")
+
+debug(dataDiagnostics)
+undebug(dataDiagnostics)
