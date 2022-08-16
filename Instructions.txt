@@ -1,0 +1,13 @@
+**The headings in the master spreadsheet you sent me are:
+Species taxagroup Site dateofrecordYear recordercodes unique_no
+The code is built off those names, so if you are different in what you are using it will not work.
+
+**The scripts will not work with a giant dataset, it needs to be a subsample of data.
+**Your dataset needs to be located at C:\BRERC and named "BRERC.csv" for "Run First" code to work.
+**You need to use "Run First" code first to automatically create "BRERC2.csv" which is used for all the other scripts.
+
+**Use the code ‘Run First’ whenever you are going to work with your dataset as it will get everything ready for you no matter what code you go on to use (OccAssess or SPARTA) and write you a new CVS that you can bring in for the analysis.
+
+- The script "Run First" in the main directory BRERC_Modelling does not work with Shiny GUI unfortunately, tried everything to get it working.
+
+-To run the Shiny app with GUI for the Data Diagnostics function, in R studio open file "ui.R" which is in Shiny folder, click "run app" towards centre of screen with the green play button.

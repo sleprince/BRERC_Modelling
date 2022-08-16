@@ -1,3 +1,5 @@
+
+
 #Run this code to get a new CSV to work with that contains all the data
 
 #Set your working directory
@@ -16,9 +18,8 @@ install.packages("tidyverse")
 install.packages("dplyr")
 
 
-install.packages("remotes")
-remotes::install_github("robboyd/occAssess")
-1
+install.packages("remotes",force = TRUE)
+#1
 
 library(lubridate)
 library(tidyverse)
@@ -108,3 +109,4 @@ MyData$Year <- as.integer(MyData$Year)
 #df <- MyData
 write.csv(MyData,"C://BRERC//BRERC2.csv", row.names = TRUE)
 system("chmod 644 C://BRERC//BRERC2.csv")
+
