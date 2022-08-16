@@ -10,17 +10,6 @@ setwd("C:/BRERC")
 
 df<-read.csv("BRERC.csv")
 
-
-#Once you have these packages installed you can put # in front of all of the install.packages to stop it running again
-install.packages("lubridate")
-install.packages("rnrfa")
-install.packages("tidyverse")
-install.packages("dplyr")
-
-
-install.packages("remotes",force = TRUE)
-#1
-
 library(lubridate)
 library(tidyverse)
 library(dplyr)

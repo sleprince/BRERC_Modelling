@@ -24,11 +24,11 @@ shinyUI(fluidPage(
   titlePanel(h1("BRERC Data Tool",h3("Tells you whether your data is statistically robust."))),
     
     #Buttons
-#            shinyjs::useShinyjs(),
-#            actionButton("btn","Run First"),
+            shinyjs::useShinyjs(),
+            actionButton("btn","Run First"),
 #            textOutput("text"),
     
- #           shinyjs::useShinyjs(),
+#            shinyjs::useShinyjs(),
             actionButton("btn2","Data Diagnostics"),
             textOutput("text"),
             

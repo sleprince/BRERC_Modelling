@@ -25,8 +25,9 @@ shinyServer(function(input, output, clientData) {
       
       
       # Generate the PNG
-      png(outfile, width=400, height=320)
-      DoDiagnostics()
+      
+      png(outfile, width=400, height=350)
+      DoAssessOne()
       dev.off() #main="Generated in renderImage()"
       
       # Return a list containing the filename
@@ -37,7 +38,7 @@ shinyServer(function(input, output, clientData) {
            alt = "This is alternate text")
     }, deleteFile = TRUE)
     
-    output$textWithHTML <- renderUI({
+   output$textWithHTML <- renderUI({
       rawText <- readLines('lm_output.txt') # get raw text
       
       # split the text into a list of character vectors
@@ -49,6 +50,14 @@ shinyServer(function(input, output, clientData) {
       
       return(replacedText)
     })
+    
+ #     },
+ #     if (x==2) {
+#        y=="Assess1"
+#      })
+      #y()
+     
+ #   }
     
     # message(modelListSummary$coefficients)
     #message_string <- "Hello there"
@@ -64,6 +73,7 @@ shinyServer(function(input, output, clientData) {
   observeEvent(input$btn2, {
     withCallingHandlers({
       shinyjs::html("text", "")
+      x <<- 1
       GenerateContent()
     },
     message = function(m)
@@ -72,7 +82,7 @@ shinyServer(function(input, output, clientData) {
       shinyjs::html(id = "text", html = m$message, add = TRUE)
     })
     
-      })
+  })
   
   observeEvent(input$btn, {
     ({
@@ -89,10 +99,10 @@ shinyServer(function(input, output, clientData) {
       #RunFirstly()
       #shinyjs::html(id = "text", html = "DONE", add = TRUE)
       
-   })
+    })
     
   })
-
+  
 })
 
 #osg_parse(grid_refs = "TQ722213")
