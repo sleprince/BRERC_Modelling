@@ -503,6 +503,8 @@ telfer_results <- telfer(taxa = TelData$Species,
                          site = TelData$Site,
                          time_period = TelData$tp,
                          minSite = 2)
+#list(telfer_results)
+#plot(telfer_results)
 
 
 # then you can extract your dataframe as a csv to convert it into usable data
