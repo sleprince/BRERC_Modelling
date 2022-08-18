@@ -1,4 +1,5 @@
-#
+#OccAssess Shiny App
+
 # This is the user-interface definition of a Shiny web application. You can
 # run the application by clicking 'Run App' above.
 #
@@ -18,28 +19,24 @@ library(rnrfa)
 library(sparta)
 
 source("DataDiagnostics.R")
-#source("Run_First.R")
 
-#Resultatios <- RunFirstly()
+funcList <- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4")
 
 # Define UI for application
 shinyUI(fluidPage(
   
   # Application title
-  titlePanel(h1("BRERC Tools",h4("OccAssess Functions"))),
+titlePanel(h1("BRERC Tools",h4("OccAssess Functions"))),
   
   #Buttons
-  shinyjs::useShinyjs(),
-  actionButton("btn","Placeholder"),
-  #            textOutput("text"),
-  
-  #            shinyjs::useShinyjs(),
-  actionButton("btn2","Assess Record Number"),
-  textOutput("text"),
+shinyjs::useShinyjs(),
+actionButton("btn","Placeholder"),
+actionButton("btn2","Assess Record Number"),
+textOutput("text"),
   
   sidebarLayout(
     
-    # Sidebar with a slider input
+    # Sidebar
     sidebarPanel(
       #textOutput('textWithNewlines'),
       uiOutput('textWithHTML')
@@ -50,14 +47,14 @@ shinyUI(fluidPage(
       #            value = 500)
     ),
     
+    #Main panel with plot.
     # Show the plot png
     mainPanel(
       imageOutput("myImage")
     )
     
   )
-)
-)
+))
 
 DoDiagnostics <<- function() {
   setwd("C:/BRERC")
@@ -84,10 +81,10 @@ DoDiagnostics <<- function() {
   print("This function enables researchers to quickly establish how the number of records has changed over time. Note the argument normalize which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.")
   sink() #end diversion of output
   
-}
+  }
 
 
-DoAssessOne <<- function() {
+DoAssess1 <<- function() {
   
 setwd("C:/BRERC")
 
@@ -122,3 +119,10 @@ print("This function enables researchers to quickly establish how the number of 
 sink() #end diversion of output
 
 }
+
+  DoAssess2 <<- function() {
+  
+  
+  
+  
+  }

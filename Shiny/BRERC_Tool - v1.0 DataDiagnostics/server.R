@@ -1,4 +1,5 @@
-#
+#DataDiagnostics Shiny App
+
 # This is the server logic of a Shiny web application. You can run the
 # application by clicking 'Run App' above.
 #
@@ -9,35 +10,37 @@
 
 library(shiny)
 
-
-#source("Run_First.R")
-
 # Define server logic required
 shinyServer(function(input, output, clientData) {
   
   GenerateContent <- function() {
     
     output$myImage <- renderImage({
+      #Calls the function to do DataDiagnostics and makes the resulting plot
+      #into a png file.
+      
       # A temp file to save the output.
       # This file will be removed later by renderImage
-      outfile <- tempfile(fileext='.png')
-      
-      
+      #figure out how to keep image as BRERC want to use it.
+
+    outfile <- tempfile(fileext='.png')
       
       # Generate the PNG
-      png(outfile, width=400, height=320)
-      DoDiagnostics()
-      dev.off() #main="Generated in renderImage()"
+    png(outfile, width=400, height=320)
+      #call the function that does DataDiagnostics
+    DoDiagnostics()
+    dev.off() #main="Generated in renderImage()"
       
       # Return a list containing the filename
-      list(src = outfile,
+    list(src = outfile,
            contentType = 'image/png',
            width = 400,
            height = 320,
-           alt = "This is alternate text")
-    }, deleteFile = TRUE)
+           alt = "This is alternate text", deleteFile = FALSE)
+    })
     
-    output$textWithHTML <- renderUI({
+    
+      output$textWithHTML <- renderUI({
       rawText <- readLines('lm_output.txt') # get raw text
       
       # split the text into a list of character vectors
@@ -48,51 +51,20 @@ shinyServer(function(input, output, clientData) {
       replacedText <- lapply(splitText, p)
       
       return(replacedText)
-    })
+      })
     
-    # message(modelListSummary$coefficients)
-    #message_string <- "Hello there"
-    #print(message_string)
-    
-    #message(message_string)
-    #message()
-    #message("one")
-    #Sys.sleep(0.5)
-    #message("two")
   }
   
-  observeEvent(input$btn2, {
-    withCallingHandlers({
-      shinyjs::html("text", "")
-      GenerateContent()
-    },
-    message = function(m)
-    {
-      #message = results
-      shinyjs::html(id = "text", html = m$message, add = TRUE)
-    })
+          observeEvent(input$btn2, {
+            withCallingHandlers({
+            shinyjs::html("text", "")
+            GenerateContent()
+            },
+              message = function(m)
+              {
+              shinyjs::html(id = "text", html = m$message, add = TRUE)
+              })
     
-      })
-  
-  observeEvent(input$btn, {
-    ({
-      #library(lubridate)
-      #library(tidyverse)
-      #library(dplyr)
-      #library(occAssess)
-      #library(rnrfa)
-      
-      #SPARTA has a sperarate install script as it is complicated, you should run that first. 
-      #library(sparta)
-      
-      #shinyjs::html("text", "")
-      #RunFirstly()
-      #shinyjs::html(id = "text", html = "DONE", add = TRUE)
-      
-   })
-    
-  })
+          })
 
 })
-
-#osg_parse(grid_refs = "TQ722213")
