@@ -1,4 +1,4 @@
-#OccAssess Shiny App
+#Telfer Shiny App
 
 # This is the server logic of a Shiny web application. You can run the
 # application by clicking 'Run App' above.
@@ -9,9 +9,6 @@
 #
 
 library(shiny)
-
-
-#source("Run_First.R")
 
 # Define server logic required
 shinyServer(function(input, output, clientData) {
@@ -25,18 +22,16 @@ shinyServer(function(input, output, clientData) {
       # A temp file to save the output.
       # This file will be removed later by renderImage
       #figure out how to keep image as BRERC want to use it.
-      
+
     outfile <- tempfile(fileext='.png')
       
-    # Generate the PNG
+      # Generate the PNG
     png(outfile, width=400, height=320)
-    #call the function that makes the plot
-    #match.fun(AssessFun)
-    f()
-    #DoAssess1()
+      #call the function that does DataDiagnostics
+    DoDiagnostics()
     dev.off() #main="Generated in renderImage()"
       
-    # Return a list containing the filename
+      # Return a list containing the filename
     list(src = outfile,
            contentType = 'image/png',
            width = 400,
@@ -58,46 +53,18 @@ shinyServer(function(input, output, clientData) {
       return(replacedText)
       })
     
- #     },
- #     if (x==2) {
-#        y=="Assess1"
-#      })
-      #y()
-     
- #   }
-    
-    # message(modelListSummary$coefficients)
-    #message_string <- "Hello there"
-    #print(message_string)
-    
-    #message(message_string)
-    #message()
-    #message("one")
-    #Sys.sleep(0.5)
-    #message("two")
   }
   
-  
-        observeEvent(input$btn2, {
-        withCallingHandlers({
-        shinyjs::html("text", "")
-          
-        #x <<- 1
-        f <<- get(funcList[[x]])
-        #AssessFun <- paste0("DoAssess", x)
-        GenerateContent()
-        },
-        
-        message = function(m)
-        
-        {
-        shinyjs::html(id = "text", html = m$message, add = TRUE)
-        })
+          observeEvent(input$btn2, {
+            withCallingHandlers({
+            shinyjs::html("text", "")
+            GenerateContent()
+            },
+              message = function(m)
+              {
+              shinyjs::html(id = "text", html = m$message, add = TRUE)
+              })
     
-        })
-  
-          observeEvent(input$btn, {
-          #placeholder button input
           })
-  
+
 })

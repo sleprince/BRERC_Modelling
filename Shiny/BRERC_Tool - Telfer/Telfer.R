@@ -1,151 +1,75 @@
-#' Data Diagnostics
-#' 
-#' This function provides visualisations of how the number of records in the
-#' dataset changes over time and how the number of species recorded on a
-#' visit changes over time. For each of these an linear model is run to test
-#' if there is a significant trend.
-#' 
-#' @param taxa A character vector of taxon names, as long as the number of observations.
-#' @param site A character vector of site names, as long as the number of observations.
-#' @param time_period A numeric vector of user defined time periods, or a date vector,
-#'        as long as the number of observations.
-#' @param plot Logical, if \code{TRUE} plots and model results will be printed to
-#'        the console
-#' @param progress_bar If \code{TRUE} a progress bar is printed to console
-#' 
-#' @return A list of filepaths, one for each species run, giving the location of the
-#'         output saved as a .rdata file, containing an object called 'out'
-#'          
-#' @examples
-#' \dontrun{
-#' 
-#' ### Diagnostics functions ###
-#' # Create data
-#' n <- 2000 # size of dataset
-#' nyr <- 20 # number of years in data
-#' nSamples <- 200 # set number of dates
-#' useDates <- TRUE
-#' 
-#' # Create somes dates
-#' first <- as.POSIXct(strptime("2003/01/01", "%Y/%m/%d"))
-#' last <- as.POSIXct(strptime(paste(2003+(nyr-1),"/12/31", sep=''), "%Y/%m/%d"))
-#' dt <- last-first
-#' rDates <- first + (runif(nSamples)*dt)
-#' 
-#' # taxa are set as random letters
-#' taxa <- sample(letters, size = n, TRUE)
-#' 
-#' # three sites are visited randomly
-#' site <- sample(c('one', 'two', 'three'), size = n, TRUE)
-#' 
-#' # the date of visit is selected at random from those created earlier
-#' if(useDates){
-#'   time_period <- sample(rDates, size = n, TRUE)
-#' } else {
-#'   time_period <- sample(1:nSamples, size = n, TRUE)
-#' }
-#' # Using a date
-#' dataDiagnostics(taxa, site, time_period)
-#' # Using a numeric
-#' dataDiagnostics(taxa, site, as.numeric(format(time_period, '%Y')))
-#' }
-#' @export
-#' @importFrom dplyr distinct
-#' @importFrom reshape2 dcast
+#Telfer - compares taxa against each other across a set timespan to 
+# give a change index score. You need to have a large amount of data to do this 
+# (i.e + 100 lines per taxa in each time point)
 
-## Change in List-length over time ##
-dataDiagnostics <- function(taxa, site, time_period, plot = TRUE, progress_bar = TRUE){
+#' Telfer's change index
+library(dplyr)
+#' 
+#' Telfers change index is designed to assess the relative change in range size of species 
+#' between two time periods (Telfer et al 2002). This function can take multiple time periods
+#' and will complete all pairwise comparisons.
+#' 
+#' @param taxa A character vector of taxon names
+#' @param site A character vector of site names
+#' @param time_period A numeric vector of user defined time periods, or a date vector
+#' @param minSite The minimum number of sites occupied in the first time period in
+#'        order for a trend to be calculated for a taxon.
+#' @param useIterations A logical variable indicating whether iterations should be used.
+#'        Iterations are used to account for increased variation in the logit proportions
+#'        close to zero and one (see Telfer et al 2002). Default is \code{TRUE}
+#' @param iterations If \code{useIterations} is \code{TRUE}, then this parameter indicates
+#'        the number of iterations to be used. In Telfer et al 2002 the number of iterations
+#'        used were 7 and 8 for the two datasets for which it was applied. The defualt here
+#'        is 10.
+#' @importFrom reshape2 dcast
+#' @examples
+#' 
+#' # Create fake data
+#' SS <- 5000 # number of observations
+#' taxa <- sample(letters, SS, replace = TRUE)
+#' site <- sample(paste('A', 1:20, sep = ''), SS, replace = TRUE)
+#' time_period <- sample(1:3, SS, replace = TRUE)
+#' 
+#' TelferResult <- telfer(taxa, site, time_period)
+#' head(TelferResult)
+#' 
+#' @export
+#' @references Telfer, M.G., Preston, C.D., & Rothery, P. (2002) A general method for
+#'             measuring relative change in range size from biological atlas data.
+#'             Biological Conservation, 107, 99-109.
+
+telfer <<- function(taxa, site, time_period, minSite = 5, useIterations = TRUE, iterations = 10){
   
-  if(progress_bar) cat('Calculating diagnostics\n')
-  if(progress_bar) pb <- txtProgressBar(min = 0, max = 10, style = 3)
+  # Perform error checks
+  errorChecks(taxa = taxa, site = site, time_period = time_period, minSite = minSite,
+              useIterations = useIterations, iterations = iterations)
   
-  # Do error checks
-  errorChecks(taxa = taxa, site = site, time_period = time_period)
+  taxa_data <- data.frame(taxa, site, time_period)
   
-  # Create dataframe from vectors
-  taxa_data <- distinct(data.frame(taxa, site, time_period))
-  if(progress_bar) setTxtProgressBar(pb, 2)
+  # Create a list of all pairwise comparisons of time periods
+  TP_combos <- t(combn(x = sort(unique(time_period)), m = 2))
   
-  if('POSIXct' %in% class(time_period) | 'Date' %in% class(time_period)){
-    recOverTime <- as.numeric(format(time_period,'%Y'))
-  } else {
-    recOverTime <- time_period
-  }
-  if(progress_bar) setTxtProgressBar(pb, 3)
-  
-  # Model the trend in records over time
-  bars <- table(recOverTime, dnn = 'RecordsPerYear')
-  mData <- data.frame(time_period = as.numeric(names(bars)), count = as.numeric(bars))
-  modelRecs <- glm(count ~ time_period, data = mData)
-  modelRecsSummary <- summary(modelRecs)  
-  if(progress_bar) setTxtProgressBar(pb, 5)
-  
-  # Reshape the data
-  space_time <- dcast(taxa_data, time_period + site ~ ., value.var='taxa',
-                      fun.aggregate = function(x) length(unique(x)))
-  names(space_time)[ncol(space_time)] <- 'listLength'  
-  if(progress_bar) setTxtProgressBar(pb, 9)
-  
-  # Model the trend in list length
-  modelList <- glm(listLength ~ time_period, family = 'poisson', data = space_time)
-  modelListSummary <- summary(modelList)  
-  if(progress_bar) setTxtProgressBar(pb, 10)
-  if(progress_bar) cat('\n\n')
-  
-  if(plot){
-    # Setup plot space
-    par(mfrow = c(2,1))
-    par(mar = c(0.1, 4.1, 4.1, 2.1))
+  # For each pair of time periods go through and compare them
+  TelferList <- apply(X = TP_combos, MARGIN = 1, FUN = function(TPs){
     
-    # Plot a simple histogram
-    barplot(height = as.numeric(bars),
-            ylab = 'Number of records',
-            main = 'Change in records and list length over time')
+    # Do the core Telfer analysis
+    basic_temp <- telfer_func(taxa_data[taxa_data$time_period %in% TPs,], iterations = iterations,
+                              useIterations = useIterations, minSite = minSite)[[1]]
     
-    # Plot the change in list length over time
-    par(mar = c(5.1, 4.1, 0.1, 2.1))
+    colnames(basic_temp)[4] <- paste('Telfer_', TPs[1], '_', TPs[2], sep = '')
+    colnames(basic_temp)[3] <- paste('Nsite_', TPs[2], sep = '')
+    colnames(basic_temp)[2] <- paste('Nsite_', TPs[1], sep = '')
     
-    Balla <<- function(){
-      
-      if('POSIXct' %in% class(time_period) | 'Date' %in% class(time_period)){
-        boxplot(listLength ~ as.numeric(format(space_time$time_period,'%Y')),
-                data = space_time,
-                xlab = 'Time Period',
-                ylab = 'List Length',
-                frame.plot=FALSE,
-                ylim = c(min(space_time$listLength), max(space_time$listLength)))
-      } else {
-        boxplot(listLength ~ space_time$time_period,
-                data = space_time,
-                xlab = 'Time Period',
-                ylab = 'List Length',
-                frame.plot=FALSE,
-                ylim = c(min(space_time$listLength), max(space_time$listLength))) 
-      }
-    }  
+    #Add in NAs
+    basic_temp <- merge(basic_temp, data.frame(taxa = sort(unique(taxa))), all = TRUE)
     
-    # Print the result to console
-    B <<- function(){
-      cat('## Linear model outputs ##\n\n')
-      cat(ifelse(modelRecsSummary$coefficients[2,4] < 0.05,
-                 'There is a significant change in the number of records over time:\n\n',
-                 'There is no detectable change in the number of records over time:\n\n'))
-      print(modelRecsSummary$coefficients)
-      A <<- modelRecsSummary$coefficients
-      #return(A)
-      cat('\n\n')
-      
-      cat(ifelse(modelListSummary$coefficients[2,4] < 0.05,
-                 'There is a significant change in list lengths over time:\n\n',
-                 'There is no detectable change in list lengths over time:\n\n'))
-      print(modelListSummary$coefficients)
-      A <<- modelListSummary$coefficients
-      #return(A)
-      
-    }
-  }
+    return(basic_temp)
+    
+  })
   
-  invisible(list(RecordsPerYear = bars, VisitListLength = space_time, modelRecs = modelRecs, modelList = modelList))
+  Telfer_out <- Reduce(function(a,b) merge(a, b, all = TRUE, by = "taxa"), TelferList)  
+  
+  return(Telfer_out)
   
 }
 
@@ -465,70 +389,125 @@ errorChecks <- function(taxa = NULL, site = NULL, survey = NULL, replicate = NUL
 #' @param progress_bar If \code{TRUE} a progress bar is printed to console
 #' 
 
-  plotDiagnostics <- function(taxa, site, time_period, plot = TRUE, progress_bar = TRUE){
+plotDiagnostics <- function(taxa, site, time_period, plot = TRUE, progress_bar = TRUE){
+  
+  # Create dataframe from vectors
+  taxa_data <- distinct(data.frame(taxa, site, time_period))
+  if(progress_bar) setTxtProgressBar(pb, 2)
+  
+  if('POSIXct' %in% class(time_period) | 'Date' %in% class(time_period)){
+    recOverTime <- as.numeric(format(time_period,'%Y'))
+  } else {
+    recOverTime <- time_period
+  }
+  if(progress_bar) setTxtProgressBar(pb, 3)
+  
+  # Model the trend in records over time
+  bars <- table(recOverTime, dnn = 'RecordsPerYear')
+  mData <- data.frame(time_period = as.numeric(names(bars)), count = as.numeric(bars))
+  modelRecs <- glm(count ~ time_period, data = mData)
+  modelRecsSummary <- summary(modelRecs)  
+  if(progress_bar) setTxtProgressBar(pb, 5)
+  
+  # Reshape the data
+  space_time <- dcast(taxa_data, time_period + site ~ ., value.var='taxa',
+                      fun.aggregate = function(x) length(unique(x)))
+  names(space_time)[ncol(space_time)] <- 'listLength'  
+  if(progress_bar) setTxtProgressBar(pb, 9)
+  
+  # Model the trend in list length
+  modelList <- glm(listLength ~ time_period, family = 'poisson', data = space_time)
+  modelListSummary <- summary(modelList)  
+  if(progress_bar) setTxtProgressBar(pb, 10)
+  if(progress_bar) cat('\n\n')
+  
+  if(plot){
+    # Setup plot space
+    par(mfrow = c(2,1))
+    par(mar = c(0.1, 4.1, 4.1, 2.1))
     
-    # Create dataframe from vectors
-    taxa_data <- distinct(data.frame(taxa, site, time_period))
-    if(progress_bar) setTxtProgressBar(pb, 2)
+    # Plot a simple histogram
+    barplot(height = as.numeric(bars),
+            ylab = 'Number of records',
+            main = 'Change in records and list length over time')
+    
+    # Plot the change in list length over time
+    par(mar = c(5.1, 4.1, 0.1, 2.1))
     
     if('POSIXct' %in% class(time_period) | 'Date' %in% class(time_period)){
-      recOverTime <- as.numeric(format(time_period,'%Y'))
+      boxplot(listLength ~ as.numeric(format(space_time$time_period,'%Y')),
+              data = space_time,
+              xlab = 'Time Period',
+              ylab = 'List Length',
+              frame.plot=FALSE,
+              ylim = c(min(space_time$listLength), max(space_time$listLength)))
     } else {
-      recOverTime <- time_period
-    }
-    if(progress_bar) setTxtProgressBar(pb, 3)
-    
-    # Model the trend in records over time
-    bars <- table(recOverTime, dnn = 'RecordsPerYear')
-    mData <- data.frame(time_period = as.numeric(names(bars)), count = as.numeric(bars))
-    modelRecs <- glm(count ~ time_period, data = mData)
-    modelRecsSummary <- summary(modelRecs)  
-    if(progress_bar) setTxtProgressBar(pb, 5)
-    
-    # Reshape the data
-    space_time <- dcast(taxa_data, time_period + site ~ ., value.var='taxa',
-                        fun.aggregate = function(x) length(unique(x)))
-    names(space_time)[ncol(space_time)] <- 'listLength'  
-    if(progress_bar) setTxtProgressBar(pb, 9)
-    
-    # Model the trend in list length
-    modelList <- glm(listLength ~ time_period, family = 'poisson', data = space_time)
-    modelListSummary <- summary(modelList)  
-    if(progress_bar) setTxtProgressBar(pb, 10)
-    if(progress_bar) cat('\n\n')
-    
-    if(plot){
-      # Setup plot space
-      par(mfrow = c(2,1))
-      par(mar = c(0.1, 4.1, 4.1, 2.1))
-      
-      # Plot a simple histogram
-      barplot(height = as.numeric(bars),
-              ylab = 'Number of records',
-              main = 'Change in records and list length over time')
-      
-      # Plot the change in list length over time
-      par(mar = c(5.1, 4.1, 0.1, 2.1))
-        
-        if('POSIXct' %in% class(time_period) | 'Date' %in% class(time_period)){
-          boxplot(listLength ~ as.numeric(format(space_time$time_period,'%Y')),
-                  data = space_time,
-                  xlab = 'Time Period',
-                  ylab = 'List Length',
-                  frame.plot=FALSE,
-                  ylim = c(min(space_time$listLength), max(space_time$listLength)))
-        } else {
-          boxplot(listLength ~ space_time$time_period,
-                  data = space_time,
-                  xlab = 'Time Period',
-                  ylab = 'List Length',
-                  frame.plot=FALSE,
-                  ylim = c(min(space_time$listLength), max(space_time$listLength))) 
-        }
-      
-        
-      }
+      boxplot(listLength ~ space_time$time_period,
+              data = space_time,
+              xlab = 'Time Period',
+              ylab = 'List Length',
+              frame.plot=FALSE,
+              ylim = c(min(space_time$listLength), max(space_time$listLength))) 
     }
     
-    #invisible(list(RecordsPerYear = bars, VisitListLength = space_time, modelRecs = modelRecs, modelList = modelList))
     
+  }
+}
+
+#invisible(list(RecordsPerYear = bars, VisitListLength = space_time, modelRecs = modelRecs, modelList = modelList))
+
+
+
+setwd("C:/BRERC")
+library(sparta)
+MyData<-read.csv("BRERC2.csv") #This is the CSV made in run first?
+
+
+#Needs to be Y-M-D
+MyData$dateofrecord <- as.Date(MyData$dateofrecord)
+class(MyData$dateofrecord)
+
+
+#Subset to get rid of pre 1960 as numbers too low for comparison with Telfer. 
+#you might not need to do this step with smaller datasets
+TelData <- subset(MyData, MyData$Year > 1959)
+
+#Telfer needs time periods, not dates
+## Create a new column for the time period
+# First define my time periods, lookng at a summary can help you understand 
+# what you are working with 
+summary(TelData$dateofrecord)
+
+# No need to have this many time periods, can just be 2
+time_periods <- data.frame(start = c(1960, 1970, 1980, 1990, 2000, 2010, 2020),
+                           end = c(1969, 1979, 1989, 1999, 2009, 2019, 2029))
+
+
+# Now use these to assign my dates to time periods
+TelData$tp <- date2timeperiod(TelData$dateofrecord, time_periods)
+
+# we can look at a table to see how many records there are per time period
+table(TelData$tp)
+
+#  1      2      3      4      5      6       
+# 1832   4263  36279  77628 310146  25272 
+
+#The Telfer index for each species is the standardized residual from a linear 
+# regression across all species and is a measure of relative change only as the 
+# average real trend across species is obscured (Isaac et al (2014); Telfer et al, 2002).
+# Telfer is used for comparing two time periods and if you have more than this 
+# the telfer function will all pair-wise comparisons.
+
+
+telfer_results <- telfer(taxa = TelData$Species,
+                         site = TelData$Site,
+                         time_period = TelData$tp,
+                         minSite = 2)
+#list(telfer_results)
+#plot(telfer_results)
+
+
+# then you can extract your dataframe as a csv to convert it into usable data
+write.csv(telfer_results, "telfer.csv")
+
+
