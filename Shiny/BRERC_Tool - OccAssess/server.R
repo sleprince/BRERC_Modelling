@@ -26,10 +26,11 @@ shinyServer(function(input, output, clientData) {
       # This file will be removed later by renderImage
       #figure out how to keep image as BRERC want to use it.
       
-    outfile <- tempfile(fileext='.png')
+    outfile <<- tempfile(fileext='.png')
       
     # Generate the PNG
     png(outfile, width=400, height=350)
+
     #call the function that makes the plot
     #match.fun(AssessFun)
     f()
@@ -41,8 +42,9 @@ shinyServer(function(input, output, clientData) {
            contentType = 'image/png',
            width = 400,
            height = 320,
-           alt = "This is alternate text", deleteFile = FALSE)
-    })
+           alt = "This is alternate text",
+           alt = "This is alternate text")
+           }, deleteFile = FALSE)
     
     
       output$textWithHTML <- renderUI({
@@ -57,24 +59,16 @@ shinyServer(function(input, output, clientData) {
       
       return(replacedText)
       })
-    
- #     },
- #     if (x==2) {
-#        y=="Assess1"
-#      })
-      #y()
-     
- #   }
-    
-    # message(modelListSummary$coefficients)
-    #message_string <- "Hello there"
-    #print(message_string)
-    
-    #message(message_string)
-    #message()
-    #message("one")
-    #Sys.sleep(0.5)
-    #message("two")
+      
+      output$downloadPlot <- downloadHandler(
+        filename = "Shinyplot.png",
+        content = function(file) {
+          png(file)
+          f()
+          dev.off()
+        })
+
+      
   }
   
   
@@ -137,6 +131,41 @@ shinyServer(function(input, output, clientData) {
             shinyjs::html("text", "")
             
             x <- 4
+            f <- get(funcList[[x]])
+            GenerateContent(f)
+          },
+          
+          message = function(m)
+            
+          {
+            shinyjs::html(id = "text", html = m$message, add = TRUE)
+          })
+          
+        })
+        
+        observeEvent(input$btn3, {
+          withCallingHandlers({
+            shinyjs::html("text", "")
+            
+            x <- 3
+            f <- get(funcList[[x]])
+            #AssessFun <- paste0("DoAssess", x)
+            GenerateContent(f)
+          },
+          
+          message = function(m)
+            
+          {
+            shinyjs::html(id = "text", html = m$message, add = TRUE)
+          })
+          
+        })
+        
+        observeEvent(input$btn5, {
+          withCallingHandlers({
+            shinyjs::html("text", "")
+            
+            x <- 5
             f <- get(funcList[[x]])
             GenerateContent(f)
           },

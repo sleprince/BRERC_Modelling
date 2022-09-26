@@ -40,6 +40,7 @@ df$Date <- as.Date(df$Date)
 
 #too few records pre-1959 to work with
 MyData <- subset(df, df$Year > 1959)
+#MyData <- df
 rm(df)
 rm(x)
 

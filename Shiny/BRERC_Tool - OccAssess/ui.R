@@ -14,30 +14,34 @@ library(data.table)
 library (ggplot2)
 library(lubridate)
 library(tidyverse)
-library(occAssess)
+#library(occAssess)
 library(rnrfa)
 library(sparta)
 
-source("DataDiagnostics.R")
+source("assessRecordNumber.R")
+source("createData.R")
 
 setwd("C:/BRERC")
 
 MyData<-read.csv("BRERC2.CSV") #This is the CSV you made in 'run first'
 
-funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4")
+#array containing the 5 OccAssess function names.
+funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5")
 
 # Define UI for application
 shinyUI(fluidPage(
   
   # Application title
 titlePanel(h1("BRERC Tools",h4("OccAssess Functions"))),
-  
+#radioButtons("normalize", "Normalize?", list("TRUE", "FALSE"), "")  
   #Buttons
 shinyjs::useShinyjs(),
-actionButton("btn2","Assess Record Number"),
+actionButton("btn2","Assess Record Number (ARN)"),
+actionButton("btn4","ARN Normalized"),
 actionButton("btn","Assess Species Number"),
 actionButton("btn3","Assess Species ID"),
-#actionButton("btn4","4"),
+actionButton("btn5","Assess Rarity Bias"),
+downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
   
   sidebarLayout(
@@ -45,7 +49,7 @@ textOutput("text"),
     # Sidebar
     sidebarPanel(
       #textOutput('textWithNewlines'),
-      uiOutput('textWithHTML')
+      uiOutput('textWithHTML'),
       #sliderInput("obs",
       #            "Number of observations:",
       #            min = 0,
@@ -72,7 +76,8 @@ DoAssess1 <<- function() {
 # enable comparisons where they are very different.
 
 periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
-
+#periods <- as.numeric(unlist(periods))
+str(periods)
 #dataset is too big to look at everything at once, will need subset
 
 nRec <- assessRecordNumber(dat = MyData,
@@ -85,8 +90,17 @@ nRec <- assessRecordNumber(dat = MyData,
                            identifier = "taxagroup",
                            normalize = FALSE)
 str(nRec$data)
-
+nRec$plot
+#Plottay()
+#plot(nRec$plot, xaxt = "n", xlab='Some Letters')
+ 
 plot(nRec$plot)
+
+#plot(nRec$data)
+#periods
+
+
+#axis(1, at=1:10, labels=periods[1:10])
 
 #write results that display in console to a txt file.
 sink(file = "lm_output.txt")
@@ -162,6 +176,38 @@ sink() #end diversion of output
   
   DoAssess4 <<- function() {
     
+    #1.####Assess Record Number#####
+    
+    # This function enables researchers to quickly establish how the number of records has changed over time. 
+    # Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to 
+    # enable comparisons where they are very different.
+    
+    periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
+    
+    #dataset is too big to look at everything at once, will need subset
+    
+    nRec <- assessRecordNumber(dat = MyData,
+                               periods = periods,
+                               species = "Species",
+                               x = "east",
+                               y = "north",
+                               year = "Year", 
+                               spatialUncertainty = "Uncertainty",
+                               identifier = "taxagroup",
+                               normalize = TRUE)
+    str(nRec$data)
+    
+    plot(nRec$plot)
+    
+    #write results that display in console to a txt file.
+    sink(file = "lm_output.txt")
+    print("This function enables researchers to quickly establish how the number of records has changed over time. Note the argument normalize which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.")
+    sink() #end diversion of output
+    
+  }  
+  
+  DoAssess5 <<- function() {
+    
     #4.####assess Rarity Bias#####
     
     # A number of studies have defined taxonomic bias in a dataset as the degree of 
@@ -202,4 +248,3 @@ sink() #end diversion of output
     sink() #end diversion of output
     
   }  
-  

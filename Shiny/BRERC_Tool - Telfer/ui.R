@@ -22,7 +22,7 @@ shinyUI(fluidPage(
 titlePanel(h1("BRERC Telfer Tool",h3("Compares taxa against each other across a
 set timespan to give a change index score."))),
     
-#Buttons
+#Buttons 
 shinyjs::useShinyjs(),
 actionButton("btn2","Telfer"),
 textOutput("text"),
