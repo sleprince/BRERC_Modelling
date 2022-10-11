@@ -76,7 +76,14 @@ DoAssess1 <<- function() {
 # enable comparisons where they are very different.
 
 periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
+#lists every year in these ranges.
 #periods <- as.numeric(unlist(periods))
+
+#alternative way, gets rid of the weird number of records problem.
+#periods <- list(1950, 1960, 1970, 1980, 1990, 2000, 2010)
+
+#converting the above list of time periods to a string. (1950:1959 etc)
+#Periods <- toString(periods)
 
 #dataset is too big to look at everything at once, will need subset
 
@@ -90,15 +97,25 @@ nRec <- assessRecordNumber(dat = MyData,
                            identifier = "taxagroup",
                            normalize = FALSE)
 
+#converting the period groups made in OccAssess to a String (1 to 7)
+nRecPeriods <- toString(nRec$data$Period)
+print(Periods)
+
 MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = group, group = group)) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
   ggplot2::theme_linedraw() +
+  #adding in the custom x axis ticks
+  #ggplot2::scale_x_discrete(breaks=c(nRecPeriods),
+  #                           labels=c(Periods)) +
   ggplot2::ylab("Number of records") +
   ggplot2::labs(colour = "",
                 x = "Period")
 
-#MyPlot$labels$x
+
+MyPlot + scale_x_discrete(labels=c(periods))
+
+#MyPlot$labels$x = (labels=c(periods))
  
 plot(MyPlot)
 
