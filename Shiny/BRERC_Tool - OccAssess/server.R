@@ -16,6 +16,29 @@ library(shiny)
 # Define server logic required
 shinyServer(function(input, output, clientData) {
   
+  output$csv <- renderText(input$csvs)
+  
+  MyData <<- reactive({
+  
+  if (input$csvs == 'BRERC.CSV') {
+    rm(MyData)
+    MyData<-read.csv("Avon_Butterflies")
+    
+  } 
+  
+  if (input$csvs == 'BRERC2.CSV') {
+
+    MyData<-read.csv("Avon_Butterflies")
+  } 
+  
+  if (input$csvs == 'Avon_Birds.CSV') {
+    
+    MyData<-read.csv("Avon_Birds.CSV")
+  } 
+    
+    
+})
+  
   GenerateContent <- function(f) {
     
     output$myImage <- renderImage({

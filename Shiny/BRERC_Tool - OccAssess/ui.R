@@ -23,7 +23,16 @@ library(sparta)
 
 setwd("C:/BRERC")
 
-MyData<-read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
+ChosenCSV = "Avon_Birds.CSV"
+MyData<<-read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
+
+  UpdateLoadedCSV <<- function() {
+  
+  #First remove the dataframe.
+  rm(MyData)
+  MyData<-read.csv("Avon_Birds.CSV")
+
+  }
 
 #array containing the 5 OccAssess function names.
 funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5")
@@ -50,6 +59,8 @@ textOutput("text"),
     sidebarPanel(
       #textOutput('textWithNewlines'),
       uiOutput('textWithHTML'),
+      
+      selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "BRERC2.CSV"), selected = "Avon_Birds.CSV"),
       #sliderInput("obs",
       #            "Number of observations:",
       #            min = 0,
@@ -60,7 +71,10 @@ textOutput("text"),
     #Main panel with plot.
     # Show the plot png
     mainPanel(
-      imageOutput("myImage")
+      imageOutput("myImage"),
+      textOutput("csv"),
+      #ChosenCSV = ("csv"),
+      #UpdateLoadedCSV()
     )
     
   )
@@ -83,7 +97,8 @@ periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009
 #periods <- list(1950, 1960, 1970, 1980, 1990, 2000, 2010)
 
 #converting the above list of time periods to a string. (1950:1959 etc)
-#Periods <- toString(periods)
+Periods <- toString(periods)
+print(Periods)
 
 #dataset is too big to look at everything at once, will need subset
 
@@ -99,7 +114,7 @@ nRec <- assessRecordNumber(dat = MyData,
 
 #converting the period groups made in OccAssess to a String (1 to 7)
 nRecPeriods <- toString(nRec$data$Period)
-print(Periods)
+print(nRecPeriods)
 
 MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = group, group = group)) +
   ggplot2::geom_point() +
