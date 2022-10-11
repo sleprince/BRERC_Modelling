@@ -14,16 +14,16 @@ library(data.table)
 library (ggplot2)
 library(lubridate)
 library(tidyverse)
-#library(occAssess)
+library(occAssess)
 library(rnrfa)
 library(sparta)
 
-source("assessRecordNumber.R")
-source("createData.R")
+#source("assessRecordNumber.R")
+#source("createData.R")
 
 setwd("C:/BRERC")
 
-MyData<-read.csv("BRERC2.CSV") #This is the CSV you made in 'run first'
+MyData<-read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
 
 #array containing the 5 OccAssess function names.
 funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5")
@@ -40,7 +40,7 @@ actionButton("btn2","Assess Record Number (ARN)"),
 actionButton("btn4","ARN Normalized"),
 actionButton("btn","Assess Species Number"),
 actionButton("btn3","Assess Species ID"),
-actionButton("btn5","Assess Rarity Bias"),
+#actionButton("btn5","Assess Rarity Bias"),
 downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
   
@@ -77,7 +77,7 @@ DoAssess1 <<- function() {
 
 periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
 #periods <- as.numeric(unlist(periods))
-str(periods)
+
 #dataset is too big to look at everything at once, will need subset
 
 nRec <- assessRecordNumber(dat = MyData,
@@ -89,18 +89,19 @@ nRec <- assessRecordNumber(dat = MyData,
                            spatialUncertainty = "Uncertainty",
                            identifier = "taxagroup",
                            normalize = FALSE)
-str(nRec$data)
-nRec$plot
-#Plottay()
-#plot(nRec$plot, xaxt = "n", xlab='Some Letters')
+
+MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = group, group = group)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::theme_linedraw() +
+  ggplot2::ylab("Number of records") +
+  ggplot2::labs(colour = "",
+                x = "Period")
+
+#MyPlot$labels$x
  
-plot(nRec$plot)
+plot(MyPlot)
 
-#plot(nRec$data)
-#periods
-
-
-#axis(1, at=1:10, labels=periods[1:10])
 
 #write results that display in console to a txt file.
 sink(file = "lm_output.txt")

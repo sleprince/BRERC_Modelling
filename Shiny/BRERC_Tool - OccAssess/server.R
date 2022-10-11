@@ -143,24 +143,6 @@ shinyServer(function(input, output, clientData) {
           
         })
         
-        observeEvent(input$btn3, {
-          withCallingHandlers({
-            shinyjs::html("text", "")
-            
-            x <- 3
-            f <- get(funcList[[x]])
-            #AssessFun <- paste0("DoAssess", x)
-            GenerateContent(f)
-          },
-          
-          message = function(m)
-            
-          {
-            shinyjs::html(id = "text", html = m$message, add = TRUE)
-          })
-          
-        })
-        
         observeEvent(input$btn5, {
           withCallingHandlers({
             shinyjs::html("text", "")
