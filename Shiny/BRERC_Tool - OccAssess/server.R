@@ -16,30 +16,71 @@ library(shiny)
 # Define server logic required
 shinyServer(function(input, output, clientData) {
   
-  output$csv <- renderText(input$csvs)
+  #output$csv <- renderText(input$csvs)
   
-  MyData <<- reactive({
-  
-  if (input$csvs == 'BRERC.CSV') {
-    rm(MyData)
-    MyData<-read.csv("Avon_Butterflies")
-    
-  } 
-  
-  if (input$csvs == 'BRERC2.CSV') {
+  observeEvent(input$btn6, {
+    withCallingHandlers({
+      shinyjs::html("text", "")
+      
+      if (input$csvs == "Avon_Butterflies.CSV") {
+        
+        y = 2
+        
+      } 
+      
+      if (input$csvs == "BRERC2.CSV") {
+        
 
-    MyData<-read.csv("Avon_Butterflies")
-  } 
+      } 
+      
+      if (input$csvs == "Avon_Birds.CSV") {
+        
+        y = 1
+      } 
+      
+      FunctionClicked = FALSE
+      #GenerateContent(y)
+      return(y)
+      
+    },
+    
+    message = function(m)
+      
+    {
+      shinyjs::html(id = "text", html = m$message, add = TRUE)
+    })
+    
+  })
   
-  if (input$csvs == 'Avon_Birds.CSV') {
+  observeEvent(input$btn5, {
+    withCallingHandlers({
+  
+
     
-    MyData<-read.csv("Avon_Birds.CSV")
-  } 
+
     
-    
+    })   
 })
   
-  GenerateContent <- function(f) {
+  UpdateLoadedCSV <<- function(int) {
+    
+    
+    ChosenCSV = CSVList[int]
+    ChosenCSV <- toString(ChosenCSV) #has to be a string to work.
+    #print(ChosenCSV)
+    #First remove the dataframe.
+    #rm(MyData)
+    #Data<-read.csv(ChosenCSV)
+    Updater(Chosen = ChosenCSV)
+    
+    
+    
+  }
+  
+  GenerateContent <- function(f, y) {
+    
+    #If (FunctionClicked = TRUE)
+    #{
     
     output$myImage <- renderImage({
       #Calls the function to do DataDiagnostics and makes the resulting plot
@@ -56,7 +97,7 @@ shinyServer(function(input, output, clientData) {
 
     #call the function that makes the plot
     #match.fun(AssessFun)
-    f()
+    f(i = y)
     #DoAssess1()
     dev.off() #main="Generated in renderImage()"
       
@@ -102,7 +143,7 @@ shinyServer(function(input, output, clientData) {
           x <- 1
           f <- get(funcList[[x]])
           #AssessFun <- paste0("DoAssess", x)
-          GenerateContent(f)
+          GenerateContent(f, x)
           },
         
         message = function(m)
@@ -117,7 +158,7 @@ shinyServer(function(input, output, clientData) {
           withCallingHandlers({
             shinyjs::html("text", "")
             
-            x <- 2
+            x <- 1
             f <- get(funcList[[x]])
             #AssessFun <- paste0("DoAssess", x)
             GenerateContent(f)

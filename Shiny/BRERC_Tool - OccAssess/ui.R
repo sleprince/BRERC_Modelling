@@ -21,21 +21,41 @@ library(sparta)
 #source("assessRecordNumber.R")
 #source("createData.R")
 
+#DATA FRAMES ONLY LOAD SUCCESSFULLY IN THIS BIT
+
+setwd("C:/BRERC")
+ 
+
+
+
+#chr = 'this is a string'
+df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
+df2 = read.csv("Avon_Butterflies.CSV")
+
+MyData <<- list(df1,df2)
+
+#doesn't do anything
+Updater <<- function(Chosen) {
+
+#First remove the dataframe.
+#if already made is true
+#rm(MyData)
+
 setwd("C:/BRERC")
 
-ChosenCSV = "Avon_Birds.CSV"
-MyData<<-read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
-
-  UpdateLoadedCSV <<- function() {
+MyData<-read.csv(Chosen)
   
-  #First remove the dataframe.
-  rm(MyData)
-  MyData<-read.csv("Avon_Birds.CSV")
-
-  }
+}
 
 #array containing the 5 OccAssess function names.
 funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5")
+
+#array containing CSV filenames
+CSVList <<- list("Avon_Birds.CSV", "Avon_Butterflies.CSV")
+
+#array containing Dataframes
+MyData <<- list("MyData$Dataframe1", "MyData$Dataframe2")
+
 
 # Define UI for application
 shinyUI(fluidPage(
@@ -60,7 +80,8 @@ textOutput("text"),
       #textOutput('textWithNewlines'),
       uiOutput('textWithHTML'),
       
-      selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "BRERC2.CSV"), selected = "Avon_Birds.CSV"),
+      selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "Avon_Butterflies.CSV"), selected = "Avon_Birds.CSV"),
+      actionButton("btn6","Load CSV")
       #sliderInput("obs",
       #            "Number of observations:",
       #            min = 0,
@@ -81,7 +102,7 @@ textOutput("text"),
 ))
 
 
-DoAssess1 <<- function() {
+DoAssess1 <<- function(i) {
 
 #1.####Assess Record Number#####
 
@@ -100,9 +121,15 @@ periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009
 Periods <- toString(periods)
 print(Periods)
 
+MyData <<- list(df1,df2)
+
+MyDF <- MyData[1]data.frame
+#assign("MyData[1]",MyData$Dataframe)
+#print(MyData[1]$data.frame)
+
 #dataset is too big to look at everything at once, will need subset
 
-nRec <- assessRecordNumber(dat = MyData,
+nRec <- assessRecordNumber(dat = MyDF,
                            periods = periods,
                            species = "Species",
                            x = "east",
