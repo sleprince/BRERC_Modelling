@@ -22,9 +22,11 @@ shinyServer(function(input, output, clientData) {
     withCallingHandlers({
       shinyjs::html("text", "")
       
+     
+      
       if (input$csvs == "Avon_Butterflies.CSV") {
         
-        y = 2
+        y <<- 2
         
       } 
       
@@ -35,7 +37,7 @@ shinyServer(function(input, output, clientData) {
       
       if (input$csvs == "Avon_Birds.CSV") {
         
-        y = 1
+        y <<- 1
       } 
       
       FunctionClicked = FALSE
@@ -77,10 +79,24 @@ shinyServer(function(input, output, clientData) {
     
   }
   
-  GenerateContent <- function(f, y) {
+  GenerateContent <- function(f) {
     
-    #If (FunctionClicked = TRUE)
-    #{
+    
+    if (input$csvs == "Avon_Butterflies.CSV") {
+      
+      y = 2
+      
+    } 
+    
+    if (input$csvs == "BRERC2.CSV") {
+      
+      
+    } 
+    
+    if (input$csvs == "Avon_Birds.CSV") {
+      
+      y = 1
+    } 
     
     output$myImage <- renderImage({
       #Calls the function to do DataDiagnostics and makes the resulting plot
@@ -97,7 +113,7 @@ shinyServer(function(input, output, clientData) {
 
     #call the function that makes the plot
     #match.fun(AssessFun)
-    f(i = y)
+    f(y)
     #DoAssess1()
     dev.off() #main="Generated in renderImage()"
       
@@ -143,7 +159,7 @@ shinyServer(function(input, output, clientData) {
           x <- 1
           f <- get(funcList[[x]])
           #AssessFun <- paste0("DoAssess", x)
-          GenerateContent(f, x)
+          GenerateContent(f)
           },
         
         message = function(m)

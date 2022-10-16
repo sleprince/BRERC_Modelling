@@ -29,10 +29,9 @@ setwd("C:/BRERC")
 
 
 #chr = 'this is a string'
-df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
-df2 = read.csv("Avon_Butterflies.CSV")
 
-MyData <<- list(df1,df2)
+
+#MyData <<- list(df1,df2)
 
 #doesn't do anything
 Updater <<- function(Chosen) {
@@ -43,7 +42,7 @@ Updater <<- function(Chosen) {
 
 setwd("C:/BRERC")
 
-MyData<-read.csv(Chosen)
+#MyData<-read.csv(Chosen)
   
 }
 
@@ -53,8 +52,11 @@ funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5
 #array containing CSV filenames
 CSVList <<- list("Avon_Birds.CSV", "Avon_Butterflies.CSV")
 
+df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
+df2 = read.csv("Avon_Butterflies.CSV")
+
 #array containing Dataframes
-MyData <<- list("MyData$Dataframe1", "MyData$Dataframe2")
+#MyData <<- list("MyData$Dataframe1", "MyData$Dataframe2")
 
 
 # Define UI for application
@@ -101,8 +103,7 @@ textOutput("text"),
   )
 ))
 
-
-DoAssess1 <<- function(i) {
+DoAssess1 <<- function(y) {
 
 #1.####Assess Record Number#####
 
@@ -110,20 +111,28 @@ DoAssess1 <<- function(i) {
 # Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to 
 # enable comparisons where they are very different.
 
-periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
+  #browser()
+  
+periods <- list(1950:2019)
+Periods <- list(1950:2019) #get back original one here and unlist it.
 #lists every year in these ranges.
-#periods <- as.numeric(unlist(periods))
+periods <- as.numeric(unlist(periods))
 
 #alternative way, gets rid of the weird number of records problem.
 #periods <- list(1950, 1960, 1970, 1980, 1990, 2000, 2010)
 
 #converting the above list of time periods to a string. (1950:1959 etc)
-Periods <- toString(periods)
+Periods <- toString(Periods)
 print(Periods)
 
-MyData <<- list(df1,df2)
+#MyData <<- list(df1,df2)
 
-MyDF <- MyData[1]data.frame
+if (y == 1)
+{ MyDF <- df1 }
+
+if (y == 2)
+{ MyDF <- df2 } 
+
 #assign("MyData[1]",MyData$Dataframe)
 #print(MyData[1]$data.frame)
 
@@ -143,20 +152,25 @@ nRec <- assessRecordNumber(dat = MyDF,
 nRecPeriods <- toString(nRec$data$Period)
 print(nRecPeriods)
 
-MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = group, group = group)) +
+MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = periods, colour = group, group = group)) +
+  #adding in the custom x axis ticks
+  #has to be at the start***
+  ggplot2::scale_x_continuous(n.breaks = 10) +
+  ggplot2::scale_y_continuous(n.breaks = 10) +
   ggplot2::geom_point() +
   ggplot2::geom_line() +
   ggplot2::theme_linedraw() +
-  #adding in the custom x axis ticks
-  #ggplot2::scale_x_discrete(breaks=c(nRecPeriods),
-  #                           labels=c(Periods)) +
   ggplot2::ylab("Number of records") +
   ggplot2::labs(colour = "",
                 x = "Period")
 
+#works but is no longer needed.
+#MyPlot + scale_x_discrete(labels=c(periods))
+#MyPlot + scale_x_discrete(breaks=c(periods))
 
-MyPlot + scale_x_discrete(labels=c(periods))
 
+
+#for actual x axis name
 #MyPlot$labels$x = (labels=c(periods))
  
 plot(MyPlot)
