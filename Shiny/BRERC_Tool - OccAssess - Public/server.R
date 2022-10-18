@@ -54,23 +54,32 @@ shinyServer(function(input, output, clientData) {
                               identifier = "taxagroup",
                               normalize = FALSE)
   
-  nRec$data$Period <- as.numeric(unlist(periods))
+  #nRec$data$Period <- as.numeric(unlist(periods))
+  val<-c(nRec$data$val)
+  per<-c(nRec$data$Period)
+  group<-c(nRec$data$group)
+  df <- data.frame(val,per,group)
   
   dat <- reactive({
-   reactPeriod <<- nRec$data[nRec$data$Period %in% seq(from=min(input$start),to=max(input$start),by=1),]
-   reactValue  <<- nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
- 
+   TestReact <- df[df$per %in% seq(from=min(input$start),to=max(input$start),by=1),]
+   #nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
+   #nRec$data[ %in% seq(from=min(input$start),to=max(input$start),by=1),]
+   
+   #print(TestReact)
+   TestReact
+   
+   
   })
-  
   
   
   output$plot2<-renderPlot({
     #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
-    ggplot2::ggplot(dat(), ggplot2::aes(y = reactValue, x = reactPeriod, colour = nRec$data$group, group = nRec$data$group)) +
+    #ggplot2::ggplot(dat(), ggplot2::aes(y = nRec$data$val, x = nRec$data$Period))
+    ggplot(dat(),aes(x=per,y=val, group = group, colour = group))+
     #adding in the custom x axis ticks
     #has to be at the start***
-      ggplot2::scale_x_continuous(n.breaks = 10) +
-      ggplot2::scale_y_continuous(n.breaks = 10) +
+      #ggplot2::scale_x_continuous(n.breaks = 10) +
+      #ggplot2::scale_y_continuous(n.breaks = 10) +
       ggplot2::geom_point() + 
       ggplot2::geom_line() +
       ggplot2::theme_linedraw() +

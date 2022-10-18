@@ -24,7 +24,7 @@ actionButton("btn3","Assess Species ID"),
 downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
 
-sliderInput("start", "Start Year:", min = min(periods), max = max(periods), step=1 , value = c(min(periods), max(periods))),
+sliderInput("start", "Start Year:", min = min(nRec$data$Period), max = max(nRec$data$Period), step=1 , value = c(min(nRec$data$Period), max(nRec$data$Period))),
 
  # step = (max(periods)-min(periods))/5
 

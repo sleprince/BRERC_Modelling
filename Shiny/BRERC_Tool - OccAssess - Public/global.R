@@ -25,3 +25,4 @@ y <<- 1
 
 periods <- list(1950:2020)
 periods <- as.numeric(unlist(periods))
+Periods <- list(1:71)
