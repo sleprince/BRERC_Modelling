@@ -8,57 +8,6 @@
 #    http://shiny.rstudio.com/
 #
 
-library(shiny)
-library(dplyr)
-library(data.table)
-library (ggplot2)
-library(lubridate)
-library(tidyverse)
-library(occAssess)
-library(rnrfa)
-library(sparta)
-
-#source("assessRecordNumber.R")
-#source("createData.R")
-
-#DATA FRAMES ONLY LOAD SUCCESSFULLY IN THIS BIT
-
-setwd("C:/BRERC")
- 
-
-
-
-#chr = 'this is a string'
-
-
-#MyData <<- list(df1,df2)
-
-#doesn't do anything
-Updater <<- function(Chosen) {
-
-#First remove the dataframe.
-#if already made is true
-#rm(MyData)
-
-setwd("C:/BRERC")
-
-#MyData<-read.csv(Chosen)
-  
-}
-
-#array containing the 5 OccAssess function names.
-funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5")
-
-#array containing CSV filenames
-CSVList <<- list("Avon_Birds.CSV", "Avon_Butterflies.CSV")
-
-df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
-df2 = read.csv("Avon_Butterflies.CSV")
-
-#array containing Dataframes
-#MyData <<- list("MyData$Dataframe1", "MyData$Dataframe2")
-
-
 # Define UI for application
 shinyUI(fluidPage(
   
@@ -67,13 +16,29 @@ titlePanel(h1("BRERC Tools",h4("OccAssess Functions"))),
 #radioButtons("normalize", "Normalize?", list("TRUE", "FALSE"), "")  
   #Buttons
 shinyjs::useShinyjs(),
-actionButton("btn2","Assess Record Number (ARN)"),
+actionButton("btn2","Records Over Time"),
 actionButton("btn4","ARN Normalized"),
 actionButton("btn","Assess Species Number"),
 actionButton("btn3","Assess Species ID"),
 #actionButton("btn5","Assess Rarity Bias"),
 downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
+
+sliderInput("start", "Start Year:", min = min(periods), max = max(periods), step=10 , value = c(min(periods), max(periods))),
+
+ # step = (max(periods)-min(periods))/5
+
+
+
+plotOutput("plot2"),
+
+
+
+#titlePanel(title=h4("Period of Years", align="center"))
+
+sidebarPanel( 
+
+
   
   sidebarLayout(
     
@@ -82,26 +47,22 @@ textOutput("text"),
       #textOutput('textWithNewlines'),
       uiOutput('textWithHTML'),
       
-      selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "Avon_Butterflies.CSV"), selected = "Avon_Birds.CSV"),
-      actionButton("btn6","Load CSV")
-      #sliderInput("obs",
-      #            "Number of observations:",
-      #            min = 0,
-      #            max = 1000,
-      #            value = 500)
-    ),
+      #selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "Avon_Butterflies.CSV"), selected = "Avon_Birds.CSV")
+
+      ),
     
     #Main panel with plot.
     # Show the plot png
     mainPanel(
       imageOutput("myImage"),
       textOutput("csv"),
+
       #ChosenCSV = ("csv"),
       #UpdateLoadedCSV()
     )
     
   )
-))
+)))
 
 DoAssess1 <<- function(y) {
 
@@ -112,33 +73,21 @@ DoAssess1 <<- function(y) {
 # enable comparisons where they are very different.
 
   #browser()
-  
-periods <- list(1950:2019)
-Periods <- list(1950:2019) #get back original one here and unlist it.
-#lists every year in these ranges.
-periods <- as.numeric(unlist(periods))
 
 #alternative way, gets rid of the weird number of records problem.
 #periods <- list(1950, 1960, 1970, 1980, 1990, 2000, 2010)
 
 #converting the above list of time periods to a string. (1950:1959 etc)
 Periods <- toString(Periods)
-print(Periods)
-
-#MyData <<- list(df1,df2)
+#print(Periods)
 
 if (y == 1)
-{ MyDF <- df1 }
+{ MyDF <<- df1 }
 
 if (y == 2)
-{ MyDF <- df2 } 
+{ MyDF <<- df2 } 
 
-#assign("MyData[1]",MyData$Dataframe)
-#print(MyData[1]$data.frame)
-
-#dataset is too big to look at everything at once, will need subset
-
-nRec <- assessRecordNumber(dat = MyDF,
+nRec <<- assessRecordNumber(dat = MyDF,
                            periods = periods,
                            species = "Species",
                            x = "east",
@@ -180,7 +129,7 @@ system("chmod 644 C://BRERC//BRERC2.csv")
 
 #write results that display in console to a txt file.
 sink(file = "lm_output.txt")
-print("This function enables researchers to quickly establish how the number of records has changed over time. Note the argument normalize which, if TRUE, will rescale the counts for each level of identifier to enable comparisons where they are very different.")
+print("How the number of records has changed over time. ")
 sink() #end diversion of output
 
 }
