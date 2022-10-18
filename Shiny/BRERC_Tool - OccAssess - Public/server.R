@@ -56,7 +56,7 @@ shinyServer(function(input, output, clientData) {
   
   #nRec$data$Period <- as.numeric(unlist(periods))
   val<-c(nRec$data$val)
-  per<-c(nRec$data$Period)
+  per<-c(periods)
   group<-c(nRec$data$group)
   df <- data.frame(val,per,group)
   
@@ -65,7 +65,7 @@ shinyServer(function(input, output, clientData) {
    #nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
    #nRec$data[ %in% seq(from=min(input$start),to=max(input$start),by=1),]
    
-   #print(TestReact)
+   print(TestReact)
    TestReact
    
    
@@ -78,8 +78,8 @@ shinyServer(function(input, output, clientData) {
     ggplot(dat(),aes(x=per,y=val, group = group, colour = group))+
     #adding in the custom x axis ticks
     #has to be at the start***
-      #ggplot2::scale_x_continuous(n.breaks = 10) +
-      #ggplot2::scale_y_continuous(n.breaks = 10) +
+      ggplot2::scale_x_continuous(n.breaks = 10) +
+      ggplot2::scale_y_continuous(n.breaks = 10) +
       ggplot2::geom_point() + 
       ggplot2::geom_line() +
       ggplot2::theme_linedraw() +
