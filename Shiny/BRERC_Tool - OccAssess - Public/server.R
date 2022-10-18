@@ -57,8 +57,8 @@ shinyServer(function(input, output, clientData) {
   nRec$data$Period <- as.numeric(unlist(periods))
   
   dat <- reactive({
-    nRec$data[nRec$data$Period %in% seq(from=min(input$start),to=max(input$start),by=10),
-                      nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=10),]
+   reactPeriod <<- nRec$data[nRec$data$Period %in% seq(from=min(input$start),to=max(input$start),by=1),]
+   reactValue  <<- nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
  
   })
   
@@ -66,7 +66,7 @@ shinyServer(function(input, output, clientData) {
   
   output$plot2<-renderPlot({
     #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
-    ggplot2::ggplot(dat(), ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = nRec$data$group, group = nRec$data$group)) +
+    ggplot2::ggplot(dat(), ggplot2::aes(y = reactValue, x = reactPeriod, colour = nRec$data$group, group = nRec$data$group)) +
     #adding in the custom x axis ticks
     #has to be at the start***
       ggplot2::scale_x_continuous(n.breaks = 10) +
