@@ -60,6 +60,9 @@ shinyServer(function(input, output, clientData) {
   group<-c(nRec$data$group)
   df <- data.frame(val,per,group)
   
+  numVals <- 0:max(val);
+  #numVals <- val[seq(1, length(val), round(max(val), digits = 6))]
+  
   dat <- reactive({
    TestReact <- df[df$per %in% seq(from=min(input$start),to=max(input$start),by=1),]
    #nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
@@ -78,8 +81,9 @@ shinyServer(function(input, output, clientData) {
     ggplot(dat(),aes(x=per,y=val, group = group, colour = group))+
     #adding in the custom x axis ticks
     #has to be at the start***
-      ggplot2::scale_x_continuous(n.breaks = 10) +
-      ggplot2::scale_y_continuous(n.breaks = 10) +
+      ggplot2::scale_x_continuous(breaks = per[seq(1, length(per), 5)]) +
+      #ggplot2::scale_y_continuous(n.breaks = max(16)) +
+      ggplot2::scale_y_continuous(breaks = ~round(unique(pretty(.))))+
       ggplot2::geom_point() + 
       ggplot2::geom_line() +
       ggplot2::theme_linedraw() +
