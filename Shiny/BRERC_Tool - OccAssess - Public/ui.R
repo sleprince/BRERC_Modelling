@@ -25,8 +25,10 @@ downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
 
 sliderInput("start", "Start Year:", min = min(periods), max = max(periods), step=1 , sep="", value = c(min(periods), max(periods))),
-
  # step = (max(periods)-min(periods))/5
+selectInput("groups", "Group", c("bird",
+                                "butterflies",
+                                "plant")),
 
 
 

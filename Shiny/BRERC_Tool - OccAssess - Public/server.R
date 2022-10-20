@@ -14,6 +14,13 @@ library(shiny)
 shinyServer(function(input, output, clientData) {
   
   reactive({
+    
+
+    
+    
+    
+    
+    
   if (input$csvs == "Avon_Butterflies.CSV") {
     
     y <<- 2
@@ -55,20 +62,33 @@ shinyServer(function(input, output, clientData) {
                               normalize = FALSE)
   
   #nRec$data$Period <- as.numeric(unlist(periods))
+
   val<-c(nRec$data$val)
   per<-c(periods)
   group<-c(nRec$data$group)
   df <- data.frame(val,per,group)
   
-  numVals <- 0:max(val);
+  
+
+  
+  #numVals <- 0:max(val);
   #numVals <- val[seq(1, length(val), round(max(val), digits = 6))]
   
-  dat <- reactive({
-   TestReact <- df[df$per %in% seq(from=min(input$start),to=max(input$start),by=1),]
+  dat <- reactive({ 
+    #filter to just the chosen group.
+    df <- filter(df, df$group %in% input$groups)
+    #reactive to inputted start and end years.
+    TestReact <- df[df$per %in% seq(from=min(input$start),to=max(input$start),by=1),] 
+        
+     
+   
+
+   
+   #df[df$group == filter(group, group == input$groups),]
    #nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
    #nRec$data[ %in% seq(from=min(input$start),to=max(input$start),by=1),]
    
-   print(TestReact)
+   #print(TestReact)
    TestReact
    
    
@@ -76,12 +96,17 @@ shinyServer(function(input, output, clientData) {
   
   
   output$plot2<-renderPlot({
+    
+
+
+    
     #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
     #ggplot2::ggplot(dat(), ggplot2::aes(y = nRec$data$val, x = nRec$data$Period))
     ggplot(dat(),aes(x=per,y=val, group = group, colour = group))+
     #adding in the custom x axis ticks
     #has to be at the start***
-      ggplot2::scale_x_continuous(breaks = per[seq(1, length(per), 5)]) +
+      ggplot2::scale_x_continuous(breaks = ~round(unique(pretty(.))))+
+      #ggplot2::scale_x_continuous(breaks = per[seq(1, length(per), 5)]) +
       #ggplot2::scale_y_continuous(n.breaks = max(16)) +
       ggplot2::scale_y_continuous(breaks = ~round(unique(pretty(.))))+
       ggplot2::geom_point() + 
