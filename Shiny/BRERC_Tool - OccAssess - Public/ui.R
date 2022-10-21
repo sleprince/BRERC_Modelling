@@ -12,23 +12,23 @@
 shinyUI(fluidPage(
   
   # Application title
-titlePanel(h1("BRERC Tools",h4("OccAssess Functions"))),
+titlePanel(h1("BRERC Tools")),
 #radioButtons("normalize", "Normalize?", list("TRUE", "FALSE"), "")  
   #Buttons
 shinyjs::useShinyjs(),
 actionButton("btn2","Records Over Time"),
-actionButton("btn4","ARN Normalized"),
-actionButton("btn","Assess Species Number"),
-actionButton("btn3","Assess Species ID"),
+#actionButton("btn4","ARN Normalized"),
+#actionButton("btn","Assess Species Number"),
+#actionButton("btn3","Assess Species ID"),
 #actionButton("btn5","Assess Rarity Bias"),
 downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
 
-sliderInput("start", "Start Year:", min = min(periods), max = max(periods), step=1 , sep="", value = c(min(periods), max(periods))),
+sliderInput("start", "Year From-Until:", min = min(periods), max = max(periods), step=1 , sep="", value = c(min(periods), max(periods))),
  # step = (max(periods)-min(periods))/5
-selectInput("groups", "Group", c("bird",
-                                "butterflies",
-                                "plant")),
+
+selectInput("groups", "Group", c("plant",
+                                "true fly - (diptera)")),
 
 
 
@@ -38,33 +38,10 @@ plotOutput("plot2"),
 
 #titlePanel(title=h4("Period of Years", align="center"))
 
-sidebarPanel( 
 
-
-  
-  sidebarLayout(
-    
-    # Sidebar
-    sidebarPanel(
-      #textOutput('textWithNewlines'),
-      uiOutput('textWithHTML'),
-      
-      #selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "Avon_Butterflies.CSV"), selected = "Avon_Birds.CSV")
-
-      ),
-    
-    #Main panel with plot.
-    # Show the plot png
-    mainPanel(
-      imageOutput("myImage"),
-      textOutput("csv"),
-
-      #ChosenCSV = ("csv"),
-      #UpdateLoadedCSV()
-    )
     
   )
-)))
+)
 
 DoAssess1 <<- function(y) {
 
