@@ -119,6 +119,7 @@ propID$plot
 
 periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
 
+browser()
 taxBias <- assessRarityBias(dat = MyData,
                             periods = periods,
                             res = 0.5,
