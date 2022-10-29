@@ -20,12 +20,13 @@ actionButton("btn2","Records Over Time"),
 actionButton("btn4","ARN Normalized"),
 actionButton("btn","Assess Species Number"),
 actionButton("btn3","Assess Species ID"),
-#actionButton("btn5","Assess Rarity Bias"),
+actionButton("btn5","Assess Rarity Bias"),
+actionButton("btn7","Do it"),
 downloadButton('downloadPlot', 'Download Plot'),
 textOutput("text"),
 
-sliderInput("start", "Start Year:", min = min(periods), max = max(periods), step=1 , value = c(min(periods), max(periods))),
-
+sliderInput("start", "Start Year:", min = min(periods), max = max((periods)+1), step=1 , value = c(min(periods), max(periods)+1)),
+sliderInput("end", "Start Year:", min = min(periods), max = max((periods)+1), step=1 , value = c(min(periods), max(periods)+1)),
  # step = (max(periods)-min(periods))/5
 
 
@@ -123,6 +124,9 @@ MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = 
 #MyPlot$labels$x = (labels=c(periods))
  
 plot(MyPlot)
+
+#important - the bit where I change the outputted dataset to have dates instead of useless group numbers.
+nRec$data$Period <-  reactPeriod$Period
 
 write.csv(nRec$data,"C://BRERC//BRERC2.csv", row.names = TRUE)
 system("chmod 644 C://BRERC//BRERC2.csv")

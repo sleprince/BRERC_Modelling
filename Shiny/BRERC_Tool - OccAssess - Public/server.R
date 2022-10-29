@@ -57,8 +57,8 @@ shinyServer(function(input, output, clientData) {
   nRec$data$Period <- as.numeric(unlist(periods))
   
   dat <- reactive({
-   reactPeriod <<- nRec$data[nRec$data$Period %in% seq(from=min(input$start),to=max(input$start),by=1),]
-   reactValue  <<- nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
+   nRec$data[nRec$data$Period %in% seq(from=min(input$start),to=max(input$end),by=1),]
+   #nRec$data[nRec$data$val %in% seq(from=min(input$start),to=max(input$start),by=1),]
  
   })
   
@@ -66,7 +66,7 @@ shinyServer(function(input, output, clientData) {
   
   output$plot2<-renderPlot({
     #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
-    ggplot2::ggplot(dat(), ggplot2::aes(y = reactValue, x = reactPeriod, colour = nRec$data$group, group = nRec$data$group)) +
+    ggplot2::ggplot(dat(), ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = nRec$data$group, group = nRec$data$group)) +
     #adding in the custom x axis ticks
     #has to be at the start***
       ggplot2::scale_x_continuous(n.breaks = 10) +
@@ -85,14 +85,27 @@ shinyServer(function(input, output, clientData) {
       
 
   
-  observeEvent(input$btn5, {
+  observeEvent(input$btn7, {
     withCallingHandlers({
   
-
+      output$plot2<-renderPlot({
+        #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
+        ggplot2::ggplot(dat(), ggplot2::aes(y = nRec$data$val, x = nRec$data$Period, colour = nRec$data$group, group = nRec$data$group)) +
+          #adding in the custom x axis ticks
+          #has to be at the start***
+          ggplot2::scale_x_continuous(n.breaks = 10) +
+          ggplot2::scale_y_continuous(n.breaks = 10) +
+          ggplot2::geom_point() + 
+          ggplot2::geom_line() +
+          ggplot2::theme_linedraw() +
+          ggplot2::ylab("Number of records") +
+          ggplot2::labs(colour = "",
+                        x = "Period")
     
 
     
     })   
+})
 })
   
   UpdateLoadedCSV <<- function(int) {
