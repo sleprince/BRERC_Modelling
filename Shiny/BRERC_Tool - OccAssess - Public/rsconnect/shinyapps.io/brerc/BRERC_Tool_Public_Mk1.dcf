@@ -1,0 +1,14 @@
+name: BRERC_Tool_Public_Mk1
+title: BRERC_Tool_Public_Mk1
+username:
+account: brerc
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7382462
+bundleId: 6428240
+url: https://brerc.shinyapps.io/BRERC_Tool_Public_Mk1/
+when: 1666382034.20146
+lastSyncTime: 1666382034.2015
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data/All_BCC_Data.csv|data/beetle.csv|data/fake_data.~csv|data/headings.csv|lm_output.txt
