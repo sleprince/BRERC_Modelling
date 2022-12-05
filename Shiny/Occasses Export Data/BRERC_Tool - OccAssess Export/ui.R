@@ -65,7 +65,7 @@ sidebarPanel(
   )
 )))
 
-DoAssess1 <<- function(y) {
+DoAssess1 <<- function() {
 
 #1.####Assess Record Number#####
 
@@ -82,11 +82,6 @@ DoAssess1 <<- function(y) {
 Periods <- toString(Periods)
 #print(Periods)
 
-if (y == 1)
-{ MyDF <<- df1 }
-
-if (y == 2)
-{ MyDF <<- df2 } 
 
 nRec <<- assessRecordNumber(dat = MyDF,
                            periods = periods,

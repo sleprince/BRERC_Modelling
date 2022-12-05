@@ -18,8 +18,8 @@ funcList <<- list("DoAssess1", "DoAssess2", "DoAssess3", "DoAssess4", "DoAssess5
 #array containing CSV filenames
 CSVList <<- list("Avon_Birds.CSV", "Avon_Butterflies.CSV")
 
-df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
-df2 = read.csv("Avon_Butterflies.CSV")
+#df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
+df1 = read.csv("BRERC.CSV")
 
 y <<- 1
 

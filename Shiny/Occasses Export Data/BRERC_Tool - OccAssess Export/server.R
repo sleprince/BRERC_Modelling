@@ -62,7 +62,8 @@ shinyServer(function(input, output, clientData) {
  
   })
   
-  
+  write.csv(nRec$data,"C://BRERC//BRERC2.csv", row.names = TRUE)
+  system("chmod 644 C://BRERC//BRERC2.csv")
   
   output$plot2<-renderPlot({
     #ggplot(nRec$data(),aes(y = nRec$data$val, x = periods))+geom_point(colour='red'),height = 400,width = 600)
@@ -126,22 +127,7 @@ shinyServer(function(input, output, clientData) {
   GenerateContent <- function(f) {
     
     
-    if (input$csvs == "Avon_Butterflies.CSV") {
-      
-      y = 2
-      
-    } 
-    
-    if (input$csvs == "BRERC2.CSV") {
-      
-      
-    } 
-    
-    if (input$csvs == "Avon_Birds.CSV") {
-      
-      y = 1
-    } 
-    
+
     output$myImage <- renderImage({
       #Calls the function to do DataDiagnostics and makes the resulting plot
       #into a png file.
@@ -157,7 +143,7 @@ shinyServer(function(input, output, clientData) {
 
     #call the function that makes the plot
     #match.fun(AssessFun)
-    f(y)
+    f()
     #DoAssess1()
     dev.off() #main="Generated in renderImage()"
       
@@ -177,7 +163,7 @@ shinyServer(function(input, output, clientData) {
       # split the text into a list of character vectors
       #   Each element in the list contains one line
       splitText <- stringi::stri_split(str = rawText, regex = '\\n')
-      
+    
       # wrap a paragraph tag around each element in the list
       replacedText <- lapply(splitText, p)
       
