@@ -23,11 +23,7 @@ actionButton("btn3","Assess Species ID"),
 actionButton("btn5","Assess Rarity Bias"),
 actionButton("btn7","Do it"),
 downloadButton('downloadPlot', 'Download Plot'),
-textOutput("text"),
-
-sliderInput("start", "Start Year:", min = min(periods), max = max((periods)+1), step=1 , value = c(min(periods), max(periods)+1)),
-sliderInput("end", "Start Year:", min = min(periods), max = max((periods)+1), step=1 , value = c(min(periods), max(periods)+1)),
- # step = (max(periods)-min(periods))/5
+#textOutput("text"),
 
 
 
@@ -46,92 +42,26 @@ sidebarPanel(
     # Sidebar
     sidebarPanel(
       #textOutput('textWithNewlines'),
-      uiOutput('textWithHTML'),
+      #uiOutput('textWithHTML'),
       
       #selectInput("csvs", "Choose Database", c("Avon_Birds.CSV","BRERC.CSV", "Avon_Butterflies.CSV"), selected = "Avon_Birds.CSV")
-
+      sliderInput("start", "Start Year:", min = min(periods), max = max((periods)+1), step=1 , value = c(min(periods), max(periods)+1)),
       ),
     
     #Main panel with plot.
     # Show the plot png
     mainPanel(
-      imageOutput("myImage"),
-      textOutput("csv"),
+      #imageOutput("myImage"),
+      #textOutput("csv"),
 
       #ChosenCSV = ("csv"),
-      #UpdateLoadedCSV()
+      #UpdateLoaddCSV()
     )
     
   )
 )))
 
-DoAssess1 <<- function() {
 
-#1.####Assess Record Number#####
-
-# This function enables researchers to quickly establish how the number of records has changed over time. 
-# Note the argument "normalize" which, if TRUE, will rescale the counts for each level of identifier to 
-# enable comparisons where they are very different.
-
-  #browser()
-
-#alternative way, gets rid of the weird number of records problem.
-#periods <- list(1950, 1960, 1970, 1980, 1990, 2000, 2010)
-
-#converting the above list of time periods to a string. (1950:1959 etc)
-Periods <- toString(Periods)
-#print(Periods)
-
-
-nRec <<- assessRecordNumber(dat = MyDF,
-                           periods = periods,
-                           species = "Species",
-                           x = "east",
-                           y = "north",
-                           year = "Year", 
-                           spatialUncertainty = "Uncertainty",
-                           identifier = "taxagroup",
-                           normalize = FALSE)
-
-#converting the period groups made in OccAssess to a String (1 to 7)
-nRecPeriods <- toString(nRec$data$Period)
-print(nRecPeriods)
-
-MyPlot <- ggplot2::ggplot(data = nRec$data, ggplot2::aes(y = nRec$data$val, x = periods, colour = group, group = group)) +
-  #adding in the custom x axis ticks
-  #has to be at the start***
-  ggplot2::scale_x_continuous(n.breaks = 10) +
-  ggplot2::scale_y_continuous(n.breaks = 10) +
-  ggplot2::geom_point() +
-  ggplot2::geom_line() +
-  ggplot2::theme_linedraw() +
-  ggplot2::ylab("Number of records") +
-  ggplot2::labs(colour = "",
-                x = "Period")
-
-#works but is no longer needed.
-#MyPlot + scale_x_discrete(labels=c(periods))
-#MyPlot + scale_x_discrete(breaks=c(periods))
-
-
-
-#for actual x axis name
-#MyPlot$labels$x = (labels=c(periods))
- 
-plot(MyPlot)
-
-#important - the bit where I change the outputted dataset to have dates instead of useless group numbers.
-nRec$data$Period <-  reactPeriod$Period
-
-write.csv(nRec$data,"C://BRERC//BRERC2.csv", row.names = TRUE)
-system("chmod 644 C://BRERC//BRERC2.csv")
-
-#write results that display in console to a txt file.
-sink(file = "lm_output.txt")
-print("How the number of records has changed over time. ")
-sink() #end diversion of output
-
-}
 
   DoAssess2 <<- function() {
   

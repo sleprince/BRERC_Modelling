@@ -20,8 +20,12 @@ CSVList <<- list("Avon_Birds.CSV", "Avon_Butterflies.CSV")
 
 #df1 = read.csv("Avon_Birds.CSV") #This is the CSV you made in 'run first'
 df1 = read.csv("BRERC.CSV")
+MyDF = read.csv("BRERC.CSV")
+MyData = read.csv("BRERC.CSV")
 
 y <<- 1
 
 periods <- list(1950:2020)
 periods <- as.numeric(unlist(periods))
+Periods <- periods
+
