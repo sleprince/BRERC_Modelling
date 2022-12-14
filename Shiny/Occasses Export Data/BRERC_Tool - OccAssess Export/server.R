@@ -237,15 +237,17 @@ shinyServer(function(input, output, clientData) {
           output$plot2<-renderPlot({
             
 
-              ggplot2::ggplot(propID$data, ggplot2::aes(y = prop, x = propID$data$Period, colour = group, group = group)) +
-              ggplot2::scale_x_continuous(n.breaks = 10) +
-              ggplot2::scale_y_continuous(n.breaks = 10) +
-              ggplot2::geom_point() +
-              ggplot2::geom_line() +
-              ggplot2::theme_linedraw() +
-              ggplot2::ylab(ylab) +
-              ggplot2::xlab("Period")
-            ggplot2::labs(colour = "")
+              #ggplot2::ggplot(propID$data, ggplot2::aes(y = prop, x = propID$data$Period, colour = group, group = group)) +
+              #ggplot2::scale_x_continuous(n.breaks = 10) +
+              #ggplot2::scale_y_continuous(n.breaks = 10) +
+              #ggplot2::geom_point() +
+              #ggplot2::geom_line() +
+              #ggplot2::theme_linedraw() +
+              #ggplot2::ylab(ylab) +
+              #ggplot2::xlab("Period")
+              #ggplot2::labs(colour = "")
+              
+              plot(propID$plot)
 
           })
           
