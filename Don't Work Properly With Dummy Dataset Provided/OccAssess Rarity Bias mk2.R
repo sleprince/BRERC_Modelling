@@ -8,8 +8,8 @@ library(occAssess)
 #library(rnrfa)
 #library(sparta)
 
-MyData<-read.csv("ALLBCCv1pt1.csv") #This is the CSV you made in 'run first'
-MyData<-read.csv("tiny.csv")
+#MyData<-read.csv("ALLBCCv1pt1.csv") #This is the CSV you made in 'run first'
+MyData<-read.csv("tiny2.csv")
 
 
 
@@ -23,6 +23,10 @@ MyData2 <- MyData[, c("Species", "east", "north", "Year", "Uncertainty",
 
 rm(MyData)
 
+#OccAssess requires NA for empty fields
+#rm(MyData2[MyData2 == '']) <- NA
+#print(MyData2)
+
 taxBias <- assessRarityBias(dat = MyData2,
                             periods = periods,
                             res = 0.5,
@@ -35,8 +39,12 @@ taxBias <- assessRarityBias(dat = MyData2,
                             identifier = "taxagroup")
 
 
+
+
 str(taxBias$data)
 
 taxBias$plot +ggplot2::ylim(c(0,1))
+
+taxBias[["plot"]]
 
 #Sys.setenv('R_MAX_VSIZE'=32000000000)

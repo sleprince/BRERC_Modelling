@@ -90,6 +90,8 @@ MyData <- subset(MyData, MyData$Year > 1959)
 
 TelData <- MyData[, c("taxagroup", "Site", "dateofrecord")]
 
+#write.csv(TelData, "telData.csv") OPTIONAL
+
 #Telfer needs time periods, not dates
 ## Create a new column for the time period
 # First define my time periods, lookng at a summary can help you understand 
@@ -113,12 +115,12 @@ TelData$tp <- date2timeperiod(TelData$dateofrecord, time_periods)
 # we can look at a table to see how many records there are per time period
 table(TelData$tp)
 
-#na.omit(TelData)
+TelData <- na.omit(TelData)
 #na.omit(TelData$tp)
 
 #  1      2      3      4      5      6       
 # 1832   4263  36279  77628 310146  25272 
- 
+
 #The Telfer index for each species is the standardized residual from a linear 
 # regression across all species and is a measure of relative change only as the 
 # average real trend across species is obscured (Isaac et al (2014); Telfer et al, 2002).
@@ -148,7 +150,6 @@ list(telfer_results)
 
 # then you can extract your dataframe as a csv to convert it into usable data
 write.csv(telfer_results, "telfer.csv")
-
 
 
 
