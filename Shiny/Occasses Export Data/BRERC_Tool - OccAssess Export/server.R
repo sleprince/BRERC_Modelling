@@ -232,7 +232,7 @@ shinyServer(function(input, output, clientData) {
           
           
           #for the plot.
-          propID$data$Period <- as.numeric(unlist(periods))
+          propID$plot$data$Period <- as.numeric(unlist(periods))
           
           output$plot2<-renderPlot({
             
@@ -246,6 +246,15 @@ shinyServer(function(input, output, clientData) {
               #ggplot2::ylab(ylab) +
               #ggplot2::xlab("Period")
               #ggplot2::labs(colour = "")
+            
+              #plot(propID$data$Period, propID$data$prop, pch=19, main='Default Axes')
+             # plot(propID$data$Period, propID$data$prop, pch=19, xlab = "Period",
+              #  ylab = "Propogation of species", xaxt = "n")
+            
+            # Change X axis tick labels
+
+              #axis(1, at = seq(round(min(propID$data$Period)), round(max(propID$data$Period)),
+                        #       by = 1), labels = periods)
               
               plot(propID$plot)
 
