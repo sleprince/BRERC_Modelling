@@ -9,7 +9,9 @@ library(occAssess)
 #library(sparta)
 
 #MyData<-read.csv("ALLBCCv1pt1.csv") #This is the CSV you made in 'run first'
-MyData<-read.csv("tiny2.csv")
+#MyData<-read.csv("tiny2.csv")
+
+MyData<-read.csv("BRERC2.csv")
 
 
 
@@ -47,4 +49,11 @@ taxBias$plot +ggplot2::ylim(c(0,1))
 
 taxBias[["plot"]]
 
-#Sys.setenv('R_MAX_VSIZE'=32000000000)
+# doesn't do anything
+#Sys.setenv('R_MAX_VSIZE'=32000000000) 
+
+#for debugging
+#write.csv(MyData2, "MyData2.csv")
+#gc()
+
+write.csv(taxBias$data, "assessRarityBias.csv")

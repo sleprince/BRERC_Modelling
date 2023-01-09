@@ -1,0 +1,5 @@
+tefler - NAs - might be able to run a command that is na.rm = TRUE
+
+character
+
+hard drive space
