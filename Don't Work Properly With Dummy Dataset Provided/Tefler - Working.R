@@ -104,6 +104,10 @@ summary(TelData$dateofrecord)
 time_periods <- data.frame(start = c(1960, 1970, 1980, 1990, 2000, 2010, 2020),
                            end = c(1969, 1979, 1989, 1999, 2009, 2019, 2029))
 
+#custom time periods for bcc_fox dataset
+#time_periods <- data.frame(start = c(1960, 1970, 2000, 2010, 2020),
+#                           end = c(1969, 1979, 2009, 2019, 2029))
+
 
 #na.omit(time_periods)
 

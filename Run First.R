@@ -60,7 +60,9 @@ Time <-MyData %>% mutate(TP =
                                      Year >= 1980 & Year <= 1989 ~ "3",
                                      Year >= 1990 & Year <= 1999 ~ "5",
                                      Year >= 2000 & Year <= 2009 ~ "6",
-                                     Year >= 2010 & Year <= 2020 ~ "7")
+                                     Year >= 2010 & Year <= 2020 ~ "7",
+                                     Year >= 2020 & Year <= 2030 ~ "8")
+                                      
 )
 
 rm(MyData)
