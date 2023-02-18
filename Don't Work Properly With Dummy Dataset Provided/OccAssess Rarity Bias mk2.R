@@ -11,13 +11,15 @@ library(occAssess)
 #MyData<-read.csv("ALLBCCv1pt1.csv") #This is the CSV you made in 'run first'
 #MyData<-read.csv("tiny2.csv")
 
-MyData<-read.csv("BRERC2.csv")
+MyData<-read.csv("BRERC.csv")
 
 
 
 str(MyData)
 
-periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
+#periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009, 2010:2019)
+
+periods <- list(2000:2009)
 
 #clean up data
 MyData2 <- MyData[, c("Species", "east", "north", "Year", "Uncertainty",
