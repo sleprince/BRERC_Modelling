@@ -76,7 +76,7 @@ plotTefler <<- function(taxa, site, time_period, plot = TRUE, progress_bar = TRU
 
 setwd("C:/BRERC")
 library(sparta)
-MyData<-read.csv("BRERC.csv") #This is the CSV made in run first
+MyData<-read.csv("BRERC3.csv") #This is the CSV made in run first
 
 
 #Needs to be Y-M-D
@@ -144,7 +144,8 @@ TelData <- na.omit(TelData)
 telfer_results <- telfer(taxa = TelData$taxagroup,
                          site = TelData$Site,
                          time_period = TelData$tp,
-                         minSite = 2)
+                         useIterations = FALSE,
+                         minSite = 1)
 list(telfer_results)
 
 #plot(telfer_results) #does not work, figure margins too large.

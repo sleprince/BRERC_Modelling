@@ -27,6 +27,8 @@ periods <- list(1950:1959, 1960:1969, 1970:1979, 1980:1989, 1990:1999, 2000:2009
 #rm(MyData2[MyData2 == '']) <- NA
 #print(MyData2)
 
+browser()
+
 taxBias <- assessRarityBias(dat = MyData,
                             periods = periods,
                             res = 0.5,
@@ -37,6 +39,7 @@ taxBias <- assessRarityBias(dat = MyData,
                             year = "Year", 
                             spatialUncertainty = "Uncertainty",
                             identifier = "taxagroup")
+                            #metric = "cor")
 
 
 
@@ -46,5 +49,8 @@ str(taxBias$data)
 taxBias$plot +ggplot2::ylim(c(0,1))
 
 taxBias[["plot"]]
+
+write.csv(taxBias$data,"C://BRERC//taxbias.csv", row.names = TRUE)
+system("chmod 644 C://BRERC//taxbias.csv")
 
 #Sys.setenv('R_MAX_VSIZE'=32000000000)
