@@ -76,7 +76,7 @@ plotTefler <<- function(taxa, site, time_period, plot = TRUE, progress_bar = TRU
 
 setwd("C:/BRERC")
 library(sparta)
-MyData<-read.csv("BRERC3.csv") #This is the CSV made in run first
+MyData<-read.csv("BRERC2.csv") #This is the CSV made in run first
 
 
 #Needs to be Y-M-D
@@ -88,7 +88,7 @@ class(MyData$dateofrecord)
 #you might not need to do this step with smaller datasets
 MyData <- subset(MyData, MyData$Year > 1959)
 
-TelData <- MyData[, c("taxagroup", "Site", "dateofrecord")]
+TelData <- MyData[, c("taxagroup", "Site", "Species", "dateofrecord")]
 
 #write.csv(TelData, "telData.csv") OPTIONAL
 
@@ -101,8 +101,8 @@ summary(TelData$dateofrecord)
 #na.omit(TelData$dateofrecord)
 
 # No need to have this many time periods, can just be 2
-time_periods <- data.frame(start = c(1983, 2010),
-                           end = c(2009, 2021))
+time_periods <- data.frame(start = c(1990, 2000, 2010),
+                           end = c(1999, 2009, 2019))
 
 #custom time periods for bcc_fox dataset
 #time_periods <- data.frame(start = c(1960, 1970, 2000, 2010, 2020),
@@ -141,7 +141,7 @@ TelData <- na.omit(TelData)
 #                      progress_bar = FALSE)
 
 
-telfer_results <- telfer(taxa = TelData$taxagroup,
+telfer_results <- telfer(taxa = TelData$Species,
                          site = TelData$Site,
                          time_period = TelData$tp,
                          useIterations = FALSE,
