@@ -27,8 +27,8 @@ summary(TelData$dateofrecord)
 #na.omit(TelData$dateofrecord)
 
 # No need to have this many time periods, can just be 2
-time_periods <- data.frame(start = c(1990, 2000, 2010),
-                           end = c(1999, 2009, 2019))
+time_periods <- data.frame(start = c(1985, 2018),
+                           end = c(1985, 2018))
 
 #custom time periods for bcc_fox dataset
 #time_periods <- data.frame(start = c(1960, 1970, 2000, 2010, 2020),
@@ -70,8 +70,8 @@ TelData <- na.omit(TelData)
 telfer_results <- telfer(taxa = TelData$Species,
                          site = TelData$Site,
                          time_period = TelData$tp,
-                         useIterations = FALSE,
-                         minSite = 1)
+                         useIterations = TRUE,
+                         minSite = 2)
 list(telfer_results)
 
 #plot(telfer_results) #does not work, figure margins too large.

@@ -1,5 +1,5 @@
 setwd("C:/BRERC")
-utm <- read.csv(file="BRERC.csv", header=TRUE, sep=",")
+utm <- read.csv(file="BRERC2.csv", header=TRUE, sep=",")
 library(rgdal)
 
 utm <- utm[complete.cases(utm),]
