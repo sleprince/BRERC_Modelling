@@ -3,6 +3,8 @@
 An extension of the BRERC Modelling project started by Danielle Edwards.
 Updating some of the code in the functions and adding a GUI.
 
+Demo of online version concept: https://brerc.shinyapps.io/BRERC_Tool_Public_Mk1/
+
 # What each function does.
 
 1.Run First
